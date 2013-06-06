@@ -11,6 +11,14 @@ Public Class MultiUploader
 
     Private Sub LoginToWiki()
         Me.Login = New WikiLogin(Me.Username, Me.Password, Me.Wiki)
+        Dim IsAutoConfirmed As Boolean = Me.Login.IsUserAutoConfirmed
+        If Not IsAutoConfirmed Then
+            Invoke(Sub()
+                       LoginButton.Text = "Error: account is not autoconfirmed"
+                       LoginButton.Enabled = True
+                   End Sub)
+            Return
+        End If
         Dim IsLoggedIn As String = Me.Login.Login()
         If IsLoggedIn = "Success" Then
             Invoke(Sub()

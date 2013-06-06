@@ -55,4 +55,27 @@ Public Class WikiLogin
     Public Function GetCookies() As CookieContainer
         Return Me.Cookies
     End Function
+
+    Public Function IsUserAutoConfirmed() As Boolean
+        Dim GetUserGroups As HttpWebRequest
+        Dim URL As String = Me.Site + "/api.php?action=query&list=users&ususers=" + Me.Username + "&usprop=groups&format=json"
+        Try
+            GetUserGroups = WebRequest.Create(URL)
+            GetUserGroups.Method = "POST"
+            GetUserGroups.UserAgent = "MultiUploader 0.1"
+            Dim GetUserGroupsResponse As HttpWebResponse = GetUserGroups.GetResponse()
+            Dim Response As Stream = GetUserGroupsResponse.GetResponseStream()
+            Dim ResponseReader As New StreamReader(Response, Encoding.UTF8)
+            Dim JSONResponseString As String = ResponseReader.ReadToEnd()
+            Dim DecodedResponse As JObject = JObject.Parse(JSONResponseString)
+            Dim Groups As String = DecodedResponse("query")("users")(0)("groups").ToString()
+            If Groups.Contains("autoconfirmed") Then
+                Return True
+            Else
+                Return False
+            End If
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
 End Class
