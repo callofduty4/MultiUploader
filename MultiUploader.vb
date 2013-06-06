@@ -105,7 +105,7 @@ Public Class MultiUploader
 
 
     Private Sub ChooseFileButton_Click(sender As Object, e As EventArgs) Handles ChooseFileButton.Click
-        ChooseFileDialog.Title = "Please choose a file to upload"
+        ChooseFileDialog.Title = "Please choose the files to upload"
         ChooseFileDialog.Filter = "JPG|*jpg|PNG|*png|GIF|*gif"
         ChooseFileDialog.Multiselect = True
         ChooseFileDialog.ShowDialog()
