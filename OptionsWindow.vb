@@ -15,9 +15,6 @@ Public Class OptionsWindow
         LogForm.Login = New WikiLogin(LogForm.Username, LogForm.Password, NewWiki)
         Dim IsLoggedIn As String = LogForm.Login.Login
         If IsLoggedIn = "Success" Then
-            Invoke(Sub()
-                       Me.Close()
-                   End Sub)
             LogForm.ChangeTitle(NewWiki)
             LogForm.AddLogMessage(LogForm.Boundary)
             LogForm.AddLogMessage("Changed site to: " + NewWiki)
@@ -25,6 +22,9 @@ Public Class OptionsWindow
                 My.Settings.Site = NewWiki
                 My.Settings.Save()
             End If
+            Invoke(Sub()
+                       Me.Close()
+                   End Sub)
         Else
             Invoke(Sub()
                        SaveButton.Text = "Error logging in, please try again"
