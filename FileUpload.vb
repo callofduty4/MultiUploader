@@ -60,14 +60,11 @@ Public Class FileUpload
             UploadImageRequestStream.Write(DataBytes, 0, DataBytes.Length) 'Write API parameter to the request stream
         Next
         Dim FileType As String
-        Select Case Path.GetExtension(FilePath) 'Set correct MIME type
-            Case ".jpg"
+        Select Case Path.GetExtension(FilePath).ToUpper() 'Set correct MIME type
             Case ".JPG"
                 FileType = "image/jpg"
-            Case ".png"
             Case ".PNG"
                 FileType = "image/png"
-            Case ".gif"
             Case ".GIF"
                 FileType = "image/gif"
         End Select
@@ -76,14 +73,11 @@ Public Class FileUpload
         UploadImageRequestStream.Write(FileStrBytes, 0, FileStrBytes.Length) 'Write imagedata header to the request stream
         Dim Image As System.Drawing.Image = System.Drawing.Image.FromFile(FilePath) 'Create image object for the image
         Dim ImageStream As New MemoryStream() 'Create binary stream for the image
-        Select Case Path.GetExtension(FilePath) 'Generate correct image data
-            Case ".jpg"
+        Select Case Path.GetExtension(FilePath).ToUpper 'Generate correct image data
             Case ".JPG"
                 Image.Save(ImageStream, System.Drawing.Imaging.ImageFormat.Jpeg)
-            Case ".png"
             Case ".PNG"
                 Image.Save(ImageStream, System.Drawing.Imaging.ImageFormat.Png)
-            Case ".gif"
             Case ".GIF"
                 Image.Save(ImageStream, System.Drawing.Imaging.ImageFormat.Gif)
         End Select
