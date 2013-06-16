@@ -17,7 +17,7 @@ Public Class OptionsWindow
         If IsLoggedIn = "Success" Then
             LogForm.ChangeTitle(NewWiki)
             LogForm.AddLogMessage(LogForm.Boundary)
-            LogForm.AddLogMessage("Changed site to: " + NewWiki)
+            LogForm.AddLogMessage("Changed site to: " + NewWiki + vbCrLf)
             If My.Settings.AutoLogIn Then
                 My.Settings.Site = NewWiki
                 My.Settings.Save()
@@ -47,7 +47,7 @@ Public Class OptionsWindow
             My.Settings.AutoLogIn = True
             My.Settings.Save()
             LogForm.AddLogMessage(LogForm.Boundary)
-            LogForm.AddLogMessage("Updated autologin settings")
+            LogForm.AddLogMessage("Updated autologin settings" + vbCrLf)
             Me.Close()
         End If
         If ChangeSiteBox.Text <> Nothing Then

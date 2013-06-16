@@ -90,7 +90,9 @@ Public Class FileUpload
         Dim UploadImageRequestResponse As WebResponse = Nothing 'Setup response
         Try
             UploadImageRequestResponse = UploadImageRequest.GetResponse() 'Get response
-            LogForm.AddLogMessage("File:" + FileTitle + " uploaded") 'Add log message
+            LogForm.AddLogMessage("OK" + vbCrLf) 'Add confirming log message
+            LogForm.AddLogMessage(Me.Site + "/w/File:" + FileTitle + vbCrLf)
+            LogForm.AdjustFileList()
             Dim UploadImageRequestStreamReader As StreamReader = New StreamReader(UploadImageRequestResponse.GetResponseStream())
             Dim UploadImageRequestResponseString As String = UploadImageRequestStreamReader.ReadToEnd
             UploadImageRequestStreamReader.Close()

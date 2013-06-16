@@ -7,7 +7,7 @@ Public Class MultiUploader
     Public Login As WikiLogin
     Public Username, Password, Wiki As String
     Dim FileNames As String()
-    Public Boundary As String = "------------------------------"
+    Public Boundary As String = "------------------------------" + vbCrLf
 
     Private Sub LoginToWiki()
         Me.Login = New WikiLogin(Me.Username, Me.Password, Me.Wiki)
@@ -23,9 +23,9 @@ Public Class MultiUploader
         If IsLoggedIn = "Success" Then
             Invoke(Sub()
                        LoginPanel.Visible = False
-                       FileUploadPanel.Visible = True
                    End Sub)
             ChangeTitle(Me.Wiki)
+            ExpandWindow()
             If My.Settings.AutoLogIn Then
                 My.Settings.Username = Me.Username
                 My.Settings.Password = Me.Password
@@ -54,10 +54,10 @@ Public Class MultiUploader
         If Me.FileNames IsNot Nothing Then
             For Each FileName In Me.FileNames
                 AddLogMessage(Boundary)
-                AddLogMessage("Uploading file: " + FileName)
+                AddLogMessage("Uploading file: " + Path.GetFileName(FileName) + "...")
                 Upload.UploadFiles(FileName, Description)
             Next
-        Else : AddLogMessage("No files selected.")
+        Else : AddLogMessage("No files selected." + vbCrLf)
         End If
         Invoke(Sub()
                    UploadButton.Enabled = True
@@ -66,13 +66,44 @@ Public Class MultiUploader
 
     Public Sub AddLogMessage(Message As String)
         Invoke(Sub()
-                   UploadLogger.Text = UploadLogger.Text + Message + vbCrLf
+                   UploadLogger.Text = UploadLogger.Text + Message
                End Sub)
     End Sub
 
     Public Sub ChangeTitle(NewTitle As String)
         Invoke(Sub()
                    Me.Text = "MultiUploader - " + NewTitle
+               End Sub)
+    End Sub
+
+    Private Sub ExpandWindow()
+        For i As Integer = 1 To 606 Step 1
+            Invoke(Sub()
+                       Me.Width = Me.Width + 1
+                       If i Mod 2 = 0 Then Me.Height = Me.Height + 1
+                   End Sub)
+        Next
+        Invoke(Sub()
+                   FileUploadPanel.Visible = True
+               End Sub)
+    End Sub
+
+    Private Sub AddFileToList(File As String)
+        FileList.Text = FileList.Text + File
+    End Sub
+
+    Public Sub AdjustFileList()
+        Invoke(Sub()
+                   Dim FileToRemove As String
+                   Dim Files As String()
+                   Files = FileList.Lines()
+                   FileToRemove = Files(0)
+                   Dim FilesList As List(Of String) = Files.Select(Function(File) File).ToList()
+                   FilesList.Remove(FileToRemove)
+                   FileList.Clear()
+                   For Each File As String In FilesList
+                       AddFileToList(File)
+                   Next
                End Sub)
     End Sub
 
@@ -122,10 +153,13 @@ Public Class MultiUploader
     Private Sub ChooseFileDialog_FileOk(ByVal sender As System.Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles ChooseFileDialog.FileOk
         Me.FileNames = ChooseFileDialog.FileNames
         If FileNames IsNot Nothing Then
-            AddLogMessage(Boundary)
-            AddLogMessage("Selected images:")
+            Dim NumberOfFiles As Integer = 0
             For Each FileName In Me.FileNames
-                AddLogMessage(Path.GetFileName(FileName))
+                NumberOfFiles += 1
+                AddFileToList(Path.GetFileName(FileName))
+                If NumberOfFiles <> FileNames.Count() Then
+                    AddFileToList(vbCrLf)
+                End If
             Next
         End If
     End Sub
@@ -139,12 +173,12 @@ Public Class MultiUploader
         UploadLogger.Text = ""
         DescriptionBox.Text = ""
         Me.FileNames = Nothing
-        AddLogMessage("Cleared all")
+        AddLogMessage("Cleared all" + vbCrLf)
     End Sub
 
     Private Sub ClearLogToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearLogToolStripMenuItem.Click
         UploadLogger.Text = ""
-        AddLogMessage("Cleared log")
+        AddLogMessage("Cleared log" + vbCrLf)
     End Sub
 
     Private Sub ClearSettingsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClearSettingsToolStripMenuItem.Click
@@ -158,5 +192,9 @@ Public Class MultiUploader
     Private Sub OpenSettingsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenSettingsToolStripMenuItem.Click
         Dim SettingsWindow As New OptionsWindow(Me)
         SettingsWindow.Show()
+    End Sub
+
+    Private Sub UploadLogger_LinkClicked(sender As Object, e As LinkClickedEventArgs) Handles UploadLogger.LinkClicked
+        System.Diagnostics.Process.Start(e.LinkText)
     End Sub
 End Class
