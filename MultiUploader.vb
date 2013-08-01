@@ -101,8 +101,13 @@ Public Class MultiUploader
                    Dim FilesList As List(Of String) = Files.Select(Function(File) File).ToList()
                    FilesList.Remove(FileToRemove)
                    FileList.Clear()
+                   Dim NumberOfFiles As Integer = 0
                    For Each File As String In FilesList
+                       NumberOfFiles += 1
                        AddFileToList(File)
+                       If NumberOfFiles <> FileNames.Count() Then
+                           AddFileToList(vbCrLf)
+                       End If
                    Next
                End Sub)
     End Sub
