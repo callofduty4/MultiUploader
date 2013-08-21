@@ -1,4 +1,6 @@
-﻿Imports System.Threading
+﻿'Copyright M.Kohli 2013
+
+Imports System.Threading
 Imports System.Net
 Imports System.IO
 Imports System.Text
